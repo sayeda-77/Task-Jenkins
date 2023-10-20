@@ -18,6 +18,7 @@ pipeline {
     post {
         success {
             emailext (
+                mail to: "aasifamushu@gmail.com"
                 subject: "Build Successful",
                 body: "The build was successful. Check the console output for details.",
                 recipientProviders: [culprits()]
