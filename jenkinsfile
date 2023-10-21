@@ -1,29 +1,30 @@
 pipeline {
-    agent any
+  agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], doGenerateSubmoduleConfigurations: false, extensions: [], userRemoteConfigs: [[url: 'https://github.com/sayeda-77/Task-Jenkins.git']]])
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh 'bash build.sh'
-            }
-        }
+  stages {
+    stage('git clone') {
+      steps {
+        git branch: 'main',
+        url: 'https://github.com/sayeda-77/Task-Jenkins.git'
+      }
     }
 
-    post {
-        success {
-            emailext (
-                mail to: "aasifamushu@gmail.com"
-                subject: "Build Successful",
-                body: "The build was successful. Check the console output for details.",
-                recipientProviders: [culprits()]
-            )
-        }
+    stage('build') {
+      steps {
+        sh 'chmod 744 build.sh'
+        sh './build.sh'
+      }
     }
+  }
+
+  post {
+    success {
+     emailext (
+      to: "aasifamushu@gmail.com",
+      subject: "Build Successful",
+      body: "The build was successful. Check the console output for details.",
+      recipientProviders: [culprits()]
+      )
+      }
+      }
 }
-
